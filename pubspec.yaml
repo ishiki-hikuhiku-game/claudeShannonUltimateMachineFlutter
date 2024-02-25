@@ -1,5 +1,5 @@
 name: shannons_ultimate_machine
-description: "A new Flutter project."
+description: "自分で自分のスイッチをオフにする機械"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -36,17 +36,41 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   url_launcher: ^6.2.4
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: 2.3.11
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/icon.png"
+  min_sdk_android: 26
+  web:
+    generate: true
+    image_path: "assets/icons/icon.png"
+    background_color: "#0000FF"
+    theme_color: "#0000FF"
+  windows:
+    generate: true
+    image_path: "assets/icons/windows_icon.png"
+    icon_size: 128 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/icons/icon.png"
+
+flutter_native_splash: # 追加
+  image: "assets/splash.png" # 追加
+  color: "#ffffff" # 画面全体の背景色を16進数で指定
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
