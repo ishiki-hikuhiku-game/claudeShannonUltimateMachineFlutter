@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:shannons_ultimate_machine/helpers/time.helper.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
@@ -47,6 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
         mode: LaunchMode.externalApplication);
   }
 
+  final DateTime _start = DateTime.now();
+  String _timeString = "00:00";
+
   @override
   Widget build(BuildContext context) {
     if (!_inited) {
@@ -71,7 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
       }
       Timer.periodic(const Duration(milliseconds: 100), (timer) {
+        final timeString = formatDiff(DateTime.now(), _start);
         if (_move) {
+          setState(() {
+            _timeString = timeString;
+          });
           return;
         }
         final obj = _destinationKey.currentContext?.findRenderObject();
@@ -91,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             _pointerX += diffX * (_velocity / distance);
             _pointerY += diffY * (_velocity / distance);
+            _timeString = timeString;
           });
           _velocity += 0.1;
         } else {
@@ -114,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text("終了"),
             ),
           ),
+          Positioned(left: 10, top: 10, child: Text(_timeString)),
           Positioned(
               left: _pointerX,
               top: _pointerY,
