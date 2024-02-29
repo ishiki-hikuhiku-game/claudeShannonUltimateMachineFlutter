@@ -14,3 +14,9 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+### ブラウザ起動コマンド
+
+CORS対応のためportを指定する必要あり
+
+- flutter run -d chrome --web-port 55555

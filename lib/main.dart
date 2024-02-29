@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:shannons_ultimate_machine/helpers/device.helper.dart';
 import 'package:shannons_ultimate_machine/helpers/rank.helper.dart';
 import 'package:shannons_ultimate_machine/helpers/time.helper.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -46,7 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final _destinationKey = GlobalKey(debugLabel: "destination");
   void _end() {
     launchUrlString("https://shannons-ultimate-machine-ranking.vercel.app/",
-        mode: LaunchMode.externalApplication);
+            mode: LaunchMode.externalApplication)
+        .then((_) {
+      closeIfNotMobile();
+    });
   }
 
   final DateTime _start = DateTime.now();
