@@ -1,11 +1,11 @@
 {
-    "name": "shannons_ultimate_machine",
-    "short_name": "shannons_ultimate_machine",
+    "name": "シャノンの究極のマシン",
+    "short_name": "シャノンの究極のマシン",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0000FF",
     "theme_color": "#0000FF",
-    "description": "A new Flutter project.",
+    "description": "自分をオフにしようとするシャノンの究極のマシン",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
