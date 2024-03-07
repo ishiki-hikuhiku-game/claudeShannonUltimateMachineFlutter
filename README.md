@@ -19,4 +19,20 @@ samples, guidance on mobile development, and a full API reference.
 
 CORS対応のためportを指定する必要あり
 
-- flutter run -d chrome --web-port 55555
+    flutter run -d chrome --web-port 55555
+
+### ビルドコマンド
+
+
+#### web
+
+    flutter build web --web-renderer html
+
+#### windows
+
+    flutter build windows
+
+#### android
+`apk` ではなく `aab` を生成する。
+
+    flutter build appbundle

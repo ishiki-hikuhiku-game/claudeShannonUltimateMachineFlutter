@@ -53,7 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final _handPointerWidth = 60.0;
   double _velocity = 0.0;
   bool _inited = false;
-  bool _move = false;
+
+  /// タップやクリックによって捕まえられている状態
+  bool _captured = false;
   double _moveCounter = 0.0;
   final _destinationKey = GlobalKey(debugLabel: "destination");
   void _end() {
@@ -92,14 +94,14 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       Timer.periodic(const Duration(milliseconds: 100), (timer) {
         final timeString = formatDiff(DateTime.now(), _start);
-        if (_move) {
+        if (_captured) {
           _moveCounter += 0.1;
           final pointerTapDiffX = _pointerX - _tapX;
           final pointerTapDiffY = _pointerY - _tapY;
           final pointerTapDistance = sqrt(pointerTapDiffX * pointerTapDiffX +
               pointerTapDiffY * pointerTapDiffY);
           if (pointerTapDistance > 150) {
-            _move = false;
+            _captured = false;
           }
           final f = force(_moveCounter);
           setState(() {
@@ -163,30 +165,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   _tapX = details.globalPosition.dx;
                   _tapY = details.globalPosition.dy;
                   _moveCounter = 0.0;
-                  _move = true;
+                  _captured = true;
                 },
                 onTapUp: (_) {
-                  _move = false;
+                  _captured = false;
                 },
                 onPanStart: (details) {
                   _tapX = details.globalPosition.dx;
                   _tapY = details.globalPosition.dy;
                   _moveCounter = 0.0;
-                  _move = true;
+                  _captured = true;
                 },
                 onPanEnd: (_) {
-                  _move = false;
+                  _captured = false;
                 },
                 onPanCancel: () {
-                  _move = false;
+                  _captured = false;
                 },
                 onPanUpdate: (details) {
-                  _tapX += details.delta.dx;
-                  _tapY += details.delta.dy;
-                  setState(() {
-                    _pointerX += details.delta.dx;
-                    _pointerY += details.delta.dy;
-                  });
+                  if (_captured) {
+                    _tapX += details.delta.dx;
+                    _tapY += details.delta.dy;
+                    setState(() {
+                      _pointerX += details.delta.dx;
+                      _pointerY += details.delta.dy;
+                    });
+                  }
                 },
                 child: SizedBox(
                     width: _handPointerWidth,
