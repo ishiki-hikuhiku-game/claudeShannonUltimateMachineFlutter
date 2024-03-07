@@ -37,13 +37,24 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+/// 徐々に大きくなる振動
+/// 0.1t^2 sin(10t) ふり幅は小さく、周期は早く
+/// の導関数
+/// (0.1t^2 sin(10 * t))' = 0.1(t^2)' sin(10t) + 0.1t^2 (sin(10t))' = 0.2 t sin(10t) + 0.1 t^2 * 10 cos(10t) = 0.2tsin(10t) + t^2 cos(10t)
+double force(double t) {
+  return 0.2 * t * sin(10 * t) + t * t * cos(10 * t);
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   double _pointerX = 0.0;
   double _pointerY = 0.0;
+  double _tapX = 0.0;
+  double _tapY = 0.0;
   final _handPointerWidth = 60.0;
   double _velocity = 0.0;
   bool _inited = false;
   bool _move = false;
+  double _moveCounter = 0.0;
   final _destinationKey = GlobalKey(debugLabel: "destination");
   void _end() {
     launchUrlString("https://shannons-ultimate-machine-ranking.vercel.app/",
@@ -82,7 +93,17 @@ class _MyHomePageState extends State<MyHomePage> {
       Timer.periodic(const Duration(milliseconds: 100), (timer) {
         final timeString = formatDiff(DateTime.now(), _start);
         if (_move) {
+          _moveCounter += 0.1;
+          final pointerTapDiffX = _pointerX - _tapX;
+          final pointerTapDiffY = _pointerY - _tapY;
+          final pointerTapDistance = sqrt(pointerTapDiffX * pointerTapDiffX +
+              pointerTapDiffY * pointerTapDiffY);
+          if (pointerTapDistance > 150) {
+            _move = false;
+          }
+          final f = force(_moveCounter);
           setState(() {
+            _pointerX += f;
             _timeString = timeString;
           });
           return;
@@ -138,13 +159,19 @@ class _MyHomePageState extends State<MyHomePage> {
               left: _pointerX,
               top: _pointerY,
               child: GestureDetector(
-                onTapDown: (_) {
+                onTapDown: (details) {
+                  _tapX = details.globalPosition.dx;
+                  _tapY = details.globalPosition.dy;
+                  _moveCounter = 0.0;
                   _move = true;
                 },
                 onTapUp: (_) {
                   _move = false;
                 },
-                onPanStart: (_) {
+                onPanStart: (details) {
+                  _tapX = details.globalPosition.dx;
+                  _tapY = details.globalPosition.dy;
+                  _moveCounter = 0.0;
                   _move = true;
                 },
                 onPanEnd: (_) {
@@ -154,6 +181,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   _move = false;
                 },
                 onPanUpdate: (details) {
+                  _tapX += details.delta.dx;
+                  _tapY += details.delta.dy;
                   setState(() {
                     _pointerX += details.delta.dx;
                     _pointerY += details.delta.dy;
