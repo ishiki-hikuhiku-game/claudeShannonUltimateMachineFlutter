@@ -36,3 +36,5 @@ CORS対応のためportを指定する必要あり
 `apk` ではなく `aab` を生成する。
 
     flutter build appbundle
+
+`pubspec.yaml`の`version: 1.0.0+1`の`+1`の部分はビルドするたびにあげる必要がある。
