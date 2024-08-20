@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
+    flutterVersionCode = '7'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    flutterVersionName = '2.02'
 }
 
 apply plugin: 'com.android.application'
@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 android {
-    compileSdkVersion 34
+    compileSdkVersion 34 // google play consoleのAPIの仕様を満たすために定期的に書き換えること
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -54,7 +54,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 26
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 34 // google play consoleのAPIの仕様を満たすために定期的に書き換えること
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
