@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:shannons_ultimate_machine/helpers/device.helper.dart';
 import 'package:shannons_ultimate_machine/helpers/rank.helper.dart';
 import 'package:shannons_ultimate_machine/helpers/time.helper.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,13 +22,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'シャノンの究極のマシン',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'シャノンの究極のマシン'),
-    );
+        title: 'シャノンの究極のマシン',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'シャノンの究極のマシン'));
   }
 }
 
@@ -54,6 +57,83 @@ class _MyHomePageState extends State<MyHomePage> {
   double _velocity = 0.0;
   bool _inited = false;
 
+  /// 音楽をコントロールする。
+  /// Webで動かない。
+  final player = AudioPlayer();
+
+  /// 音楽をコントロールする。
+  /// 公式ページによればwindowsをサポートしていない。
+  final assetsAudioPlayer = AssetsAudioPlayer();
+
+  double _volume = 0.0;
+  bool _isPlay = false;
+  final fileNames = ["Epia", "Herence"];
+
+  /// ロガー
+  final logger = Logger();
+
+  void initMusic() async {
+    final random = new Random();
+    final fileName = fileNames[random.nextInt(fileNames.length)];
+    try {
+      if (kIsWeb) {
+        await assetsAudioPlayer.open(Audio("assets/musics/$fileName.wav"),
+            loopMode: LoopMode.single);
+        await assetsAudioPlayer.setVolume(_volume);
+      } else {
+        await player.setSourceAsset('musics/$fileName.wav');
+        await player.setVolume(_volume);
+        await player.setReleaseMode(ReleaseMode.loop);
+      }
+      logger.i("init music");
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  void playMusic() async {
+    if (_isPlay) {
+      return;
+    }
+    try {
+      if (kIsWeb) {
+        await assetsAudioPlayer.play();
+      } else {
+        await player.resume();
+      }
+      logger.i("played music");
+      _isPlay = true;
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  void pauseMusic() async {
+    try {
+      if (kIsWeb) {
+        await assetsAudioPlayer.pause();
+      } else {
+        await player.pause();
+      }
+      logger.i("played music");
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    initMusic();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    player.dispose();
+  }
+
   /// タップやクリックによって捕まえられている状態
   bool _captured = false;
   double _moveCounter = 0.0;
@@ -64,6 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
         .then((_) {
       closeIfNotMobile();
     });
+    pauseMusic();
   }
 
   final DateTime _start = DateTime.now();
@@ -94,6 +175,15 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       Timer.periodic(const Duration(milliseconds: 100), (timer) {
         final timeString = formatDiff(DateTime.now(), _start);
+        if (_isPlay) {
+          _volume += 0.0001;
+          _volume = min(_volume, 1.0);
+          if (kIsWeb) {
+            assetsAudioPlayer.setVolume(_volume);
+          } else {
+            player.setVolume(_volume);
+          }
+        }
         if (_captured) {
           _moveCounter += 0.1;
           final pointerTapDiffX = _pointerX - _tapX;
@@ -166,6 +256,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   _tapY = details.globalPosition.dy;
                   _moveCounter = 0.0;
                   _captured = true;
+
+                  playMusic();
                 },
                 onTapUp: (_) {
                   _captured = false;
@@ -175,6 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _tapY = details.globalPosition.dy;
                   _moveCounter = 0.0;
                   _captured = true;
+                  playMusic();
                 },
                 onPanEnd: (_) {
                   _captured = false;

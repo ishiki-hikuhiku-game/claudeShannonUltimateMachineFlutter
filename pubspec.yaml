@@ -16,7 +16,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+2
+# +nの部分をビルドするたびに挙げる必要がある。
+version: 1.0.0+3
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -35,9 +36,17 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  url_launcher: ^6.2.4
+  url_launcher: ^6.3.0
   http: ^1.2.0
   universal_html: ^2.2.4
+  logger: ^2.4.0
+  # audioplayersは安定性に欠けるようで、2024/08/20時点でwebでは動いていない。
+  # とりあえずwindowsでは動く。
+  # 参考 https://github.com/bluefireteam/audioplayers/issues/1810
+  audioplayers: ^6.0.0
+  # 以下のライブラリはwebでうまく動くが、現状ではwindowsのサポートをしていないようだ。
+  assets_audio_player: ^3.0.8
+  # 上の二つをうまく使い分けて、どうにかするのが現状の方針。
   
 
 dev_dependencies:
@@ -50,7 +59,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.13.1
-  flutter_native_splash: 2.3.11
+  flutter_native_splash: ^2.4.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -88,6 +97,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/cursor.png
+    - assets/musics/Epia.wav
+    - assets/musics/Herence.wav
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
