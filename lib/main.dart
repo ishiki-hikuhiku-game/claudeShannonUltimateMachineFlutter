@@ -77,11 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final fileName = fileNames[random.nextInt(fileNames.length)];
     try {
       if (kIsWeb) {
-        await assetsAudioPlayer.open(Audio("assets/musics/$fileName.wav"),
+        await assetsAudioPlayer.open(Audio("assets/musics/$fileName.mp3"),
             loopMode: LoopMode.single);
         await assetsAudioPlayer.setVolume(_volume);
       } else {
-        await player.setSourceAsset('musics/$fileName.wav');
+        await player.setSourceAsset('musics/$fileName.mp3');
         await player.setVolume(_volume);
         await player.setReleaseMode(ReleaseMode.loop);
       }
