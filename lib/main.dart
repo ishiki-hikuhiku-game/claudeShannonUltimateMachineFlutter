@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+// import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shannons_ultimate_machine/helpers/device.helper.dart';
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// 音楽をコントロールする。
   /// 公式ページによればwindowsをサポートしていない。
-  final assetsAudioPlayer = AssetsAudioPlayer();
+  // final assetsAudioPlayer = AssetsAudioPlayer();
 
   double _volume = 0.0;
   bool _isPlay = false;
@@ -77,11 +78,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final fileName = fileNames[random.nextInt(fileNames.length)];
     try {
       if (kIsWeb) {
-        await assetsAudioPlayer.open(
-            Audio.network(
-                "https://shannons-ultimate-machine-ranking.vercel.app/musics/$fileName.mp3"),
-            loopMode: LoopMode.single);
-        await assetsAudioPlayer.setVolume(_volume);
+        // await assetsAudioPlayer.open(
+        //     Audio.network(
+        //         "https://shannons-ultimate-machine-ranking.vercel.app/musics/$fileName.mp3"),
+        //     loopMode: LoopMode.single);
+        // await assetsAudioPlayer.setVolume(_volume);
       } else {
         await player.setSourceUrl(
             "https://shannons-ultimate-machine-ranking.vercel.app/musics/$fileName.mp3");
@@ -100,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     try {
       if (kIsWeb) {
-        await assetsAudioPlayer.play();
+        // await assetsAudioPlayer.play();
       } else {
         await player.resume();
       }
@@ -114,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void pauseMusic() async {
     try {
       if (kIsWeb) {
-        await assetsAudioPlayer.pause();
+        // await assetsAudioPlayer.pause();
       } else {
         await player.pause();
       }
@@ -182,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _volume += 0.0001;
           _volume = min(_volume, 1.0);
           if (kIsWeb) {
-            assetsAudioPlayer.setVolume(_volume);
+            // assetsAudioPlayer.setVolume(_volume);
           } else {
             player.setVolume(_volume);
           }
@@ -237,63 +238,94 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
-        body: Stack(children: [
-          Center(
-            child: TextButton(
-              onPressed: _end,
-              key: _destinationKey,
-              child: const Text("終了"),
-            ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Stack(children: [
+        Center(
+          child: TextButton(
+            onPressed: _end,
+            key: _destinationKey,
+            child: const Text("終了"),
           ),
-          Positioned(left: 10, top: 10, child: Text(_timeString)),
-          Positioned(
-              left: _pointerX,
-              top: _pointerY,
-              child: GestureDetector(
-                onTapDown: (details) {
-                  _tapX = details.globalPosition.dx;
-                  _tapY = details.globalPosition.dy;
-                  _moveCounter = 0.0;
-                  _captured = true;
+        ),
+        Positioned(left: 10, top: 10, child: Text(_timeString)),
+        Positioned(
+            left: _pointerX,
+            top: _pointerY,
+            child: GestureDetector(
+              onTapDown: (details) {
+                _tapX = details.globalPosition.dx;
+                _tapY = details.globalPosition.dy;
+                _moveCounter = 0.0;
+                _captured = true;
 
-                  playMusic();
-                },
-                onTapUp: (_) {
-                  _captured = false;
-                },
-                onPanStart: (details) {
-                  _tapX = details.globalPosition.dx;
-                  _tapY = details.globalPosition.dy;
-                  _moveCounter = 0.0;
-                  _captured = true;
-                  playMusic();
-                },
-                onPanEnd: (_) {
-                  _captured = false;
-                },
-                onPanCancel: () {
-                  _captured = false;
-                },
-                onPanUpdate: (details) {
-                  if (_captured) {
-                    _tapX += details.delta.dx;
-                    _tapY += details.delta.dy;
-                    setState(() {
-                      _pointerX += details.delta.dx;
-                      _pointerY += details.delta.dy;
-                    });
-                  }
-                },
-                child: SizedBox(
-                    width: _handPointerWidth,
-                    height: _handPointerWidth,
-                    child:
-                        Image.asset("assets/cursor.png", fit: BoxFit.contain)),
-              )),
-        ]));
+                playMusic();
+              },
+              onTapUp: (_) {
+                _captured = false;
+              },
+              onPanStart: (details) {
+                _tapX = details.globalPosition.dx;
+                _tapY = details.globalPosition.dy;
+                _moveCounter = 0.0;
+                _captured = true;
+                playMusic();
+              },
+              onPanEnd: (_) {
+                _captured = false;
+              },
+              onPanCancel: () {
+                _captured = false;
+              },
+              onPanUpdate: (details) {
+                if (_captured) {
+                  _tapX += details.delta.dx;
+                  _tapY += details.delta.dy;
+                  setState(() {
+                    _pointerX += details.delta.dx;
+                    _pointerY += details.delta.dy;
+                  });
+                }
+              },
+              child: SizedBox(
+                  width: _handPointerWidth,
+                  height: _handPointerWidth,
+                  child: Image.asset("assets/cursor.png", fit: BoxFit.contain)),
+            )),
+      ]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showAboutDialog(
+              context: context,
+              applicationVersion: "1.1.0",
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
+                          text: "シャノンの究極のマシンとは「ONにすると自分をOFFにする機械」です。\n"),
+                      TextSpan(
+                          text: "プライバシー・ポリシー",
+                          style: const TextStyle(color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrlString(
+                                  "https://github.com/ishiki-hikuhiku-game/privacy-policy/blob/main/privacy-policy.md",
+                                  mode: LaunchMode.externalApplication);
+                            })
+                    ]),
+                  ),
+                )
+              ]);
+        },
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        child: const Icon(Icons.question_mark),
+      ),
+    );
   }
 }

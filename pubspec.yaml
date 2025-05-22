@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 # +nの部分をビルドするたびに挙げる必要がある。
-version: 1.1.0+6
+version: 1.1.0+7
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -45,7 +45,8 @@ dependencies:
   # 参考 https://github.com/bluefireteam/audioplayers/issues/1810
   audioplayers: ^6.0.0
   # 以下のライブラリはwebでうまく動くが、現状ではwindowsのサポートをしていないようだ。
-  assets_audio_player: ^3.0.8
+  # assets_audio_player: ^3.0.8
+  # 最新のandroid studioでビルドできなくなった。
   # 上の二つをうまく使い分けて、どうにかするのが現状の方針。
   
 

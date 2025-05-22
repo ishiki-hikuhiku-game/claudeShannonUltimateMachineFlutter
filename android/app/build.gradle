@@ -33,6 +33,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 android {
+    namespace "xyz.tannakaken.shannons_ultimate_machine"
     compileSdkVersion 34 // google play consoleのAPIの仕様を満たすために定期的に書き換えること
     ndkVersion flutter.ndkVersion
 
@@ -55,6 +56,7 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 26
         targetSdkVersion 34 // google play consoleのAPIの仕様を満たすために定期的に書き換えること
+        ndkVersion ="27.0.12077973"
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
